@@ -1,3 +1,21 @@
+//! A build dependency for running `zig` to build a native library
+//!
+//! This crate provides some necessary boilerplate and shim support for running
+//! the system `zig` command to build a native library.
+//!
+//! ## Examples
+//!
+//! ```no_run
+//! use zig;
+//!
+//! // Builds the project in the directory located in `libfoo`, installing it
+//! // into $OUT_DIR
+//! let dst = zig::build("libfoo");
+//!
+//! println!("cargo:rustc-link-search=native={}", dst.display());
+//! println!("cargo:rustc-link-lib=static=foo");
+//! ```
+
 use std::{
     env,
     path::{Path, PathBuf},
@@ -8,6 +26,26 @@ pub struct Config {
     path: PathBuf,
     defines: Vec<(String, String)>,
     optimize: Option<String>,
+}
+
+/// Builds the native library rooted at `path` with the default zig options.
+/// This will return the directory in which the library was installed.
+///
+/// # Examples
+///
+/// ```no_run
+/// use zig;
+///
+/// // Builds the project in the directory located in `libfoo`, installing it
+/// // into $OUT_DIR
+/// let dst = zig::build("libfoo");
+///
+/// println!("cargo:rustc-link-search=native={}", dst.display());
+/// println!("cargo:rustc-link-lib=static=foo");
+/// ```
+///
+pub fn build<P: AsRef<Path>>(path: P) -> PathBuf {
+    Config::new(path.as_ref()).build()
 }
 
 impl Config {
@@ -58,7 +96,16 @@ impl Config {
             cmd.arg(format!("-D{}={}", k, v));
         });
 
-        cmd.status().unwrap();
+        match cmd.status() {
+            Ok(status) => {
+                if !status.success() {
+                    panic!("zig build failed");
+                }
+            }
+            Err(e) => {
+                panic!("failed to execute zig build: {}", e);
+            }
+        }
 
         println!("cargo:root={}", dst.display());
         dst
