@@ -12,11 +12,16 @@ pub struct Config {
 
 impl Config {
     pub fn build(&mut self) -> PathBuf {
-        let os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+        let mut os = env::var("CARGO_CFG_TARGET_OS").unwrap();
         let arch = match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
             "i686" => "i386".to_string(),
             s => s.to_string(),
         };
+
+        let target = env::var("TARGET").unwrap();
+        if target.contains("msvc") {
+            os += "-msvc";
+        }
 
         let optimize = match self.optimize {
             Some(ref s) => s.clone(),
