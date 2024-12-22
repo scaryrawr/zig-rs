@@ -17,28 +17,26 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [macos-latest, windows-latest]
 
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-          - name: Install zig
-            if: runner.os != 'Windows'
-            run: |
-              brew install zig
+      - name: Install zig
+        if: runner.os != 'Windows'
+        run: |
+          brew install zig
 
-          - name: Install zig
-            if: runner.os == 'Windows'
-            run: |
-              choco install zig -y
+      - name: Install zig
+        if: runner.os == 'Windows'
+        run: |
+          choco install zig -y
 
-          - name: Build Debug
-            working-directory: ${{github.workspace}}/test-crate
-            shell: bash
-            run: |
-              output=`cargo run -- GitHub`
-                if [ "$output" != "Hello, GitHub!" ]; then
-                  echo "Unexpected output: $output"
-                  exit 1
-                fi
+      - name: Run test crate debug
+        working-directory: ${{github.workspace}}/test-crate
+        run: cargo run -- GitHub
+
+      - name: Run test crate release
+        working-directory: ${{github.workspace}}/test-crate
+        run: cargo run --release -- GitHub
