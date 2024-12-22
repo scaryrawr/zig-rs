@@ -1,8 +1,9 @@
-use zig;
-
 fn main() {
-    let mut config = zig::Config::new("libhello");
-    let dst = config.build();
+    println!("cargo:rerun-if-changed=libhello/build.zig");
+    println!("cargo:rerun-if-changed=libsl/hello.zig");
+
+    let dst = zig::build("libhello");
+
     println!("cargo:rustc-link-search=native={}", dst.display());
     println!("cargo:rustc-link-lib=static=hello");
 }
