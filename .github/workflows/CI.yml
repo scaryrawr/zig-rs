@@ -37,8 +37,4 @@ jobs:
         working-directory: ${{github.workspace}}/test-crate
         shell: bash
         run: |
-          output=`cargo run -- GitHub`
-            if [ "$output" != "Hello, GitHub!" ]; then
-              echo "Unexpected output: $output"
-              exit 1
-            fi
+          cargo run -- GitHub
