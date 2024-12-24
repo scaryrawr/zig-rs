@@ -26,7 +26,7 @@ jobs:
       - name: Install zig
         if: runner.os != 'Windows'
         run: |
-          if [ -t /home/linuxbrew/.linuxbrew/bin/brew ]; then
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           fi
 
