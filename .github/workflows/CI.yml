@@ -37,6 +37,14 @@ jobs:
         run: |
           choco install zig -y
 
+      - name: Run build debug
+        working-directory: ${{github.workspace}}/test-crate
+        run: cargo build
+
+      - name: Run build release
+        working-directory: ${{github.workspace}}/test-crate
+        run: cargo build --release
+
       - name: Run test crate debug
         working-directory: ${{github.workspace}}/test-crate
         run: cargo test
