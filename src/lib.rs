@@ -111,6 +111,18 @@ impl Config {
         dst
     }
 
+    /// Adds a new `-D` flag to pass to zig.
+    pub fn define<K, V>(&mut self, key: &str, value: &str) -> &mut Config {
+        self.defines.push((key.to_string(), value.to_string()));
+        self
+    }
+
+    /// Sets the optimization level for the build.
+    pub fn optimize(&mut self, level: &str) -> &mut Config {
+        self.optimize = Some(level.to_string());
+        self
+    }
+
     pub fn new<P: AsRef<Path>>(path: P) -> Config {
         Config {
             path: env::current_dir().unwrap().join(path),

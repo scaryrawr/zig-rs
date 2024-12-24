@@ -35,8 +35,8 @@ jobs:
 
       - name: Run test crate debug
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo run -- GitHub
+        run: cargo test
 
       - name: Run test crate release
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo run --release -- GitHub
+        run: cargo test --release
