@@ -26,15 +26,11 @@ jobs:
       - name: Install zig
         if: runner.os != 'Windows'
         run: |
-          if command -v brew >/dev/null 2>&1; then
-            brew install zig
-          else
-            ARCH="$(uname -m)"
-            DOWNLOAD_URL=$(curl -sSL https://ziglang.org/download/index.json | jq -r 'to_entries[1].value."'"${ARCH}"'-linux".tarball')
-            curl -sSL $DOWNLOAD_URL | tar xJ -C /usr/local/share/zig --strip-components 1
-            chmod +x /usr/local/share/zig/zig
-            ln -s /usr/local/share/zig/zig /usr/local/bin/zig
+          if [ -t /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           fi
+
+          brew install zig
 
       - name: Install zig
         if: runner.os == 'Windows'
