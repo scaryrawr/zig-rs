@@ -28,6 +28,7 @@ jobs:
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            echo '\neval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.bashrc'
           fi
 
           brew install zig
