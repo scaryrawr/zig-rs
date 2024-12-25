@@ -31,6 +31,7 @@ jobs:
           fi
 
           brew install zig
+          rustup update
 
       - name: Install zig
         if: runner.os == 'Windows'
