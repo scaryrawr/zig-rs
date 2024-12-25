@@ -23,11 +23,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install zig
+      - name: Install dependencies
         if: runner.os != 'Windows'
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            rustup target install $(uname -m)-unknown-linux-musl
+            echo '[build]' > ./.cargo/Cargo.toml
+            echo "target = \"$(uname -m)-unknown-linux-musl\"" >> ./.cargo/Cargo.toml
           fi
 
           brew install zig
