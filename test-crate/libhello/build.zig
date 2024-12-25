@@ -11,5 +11,13 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    switch (optimize) {
+        .Debug, .ReleaseSafe => libhello.bundle_compiler_rt = true,
+        .ReleaseFast, .ReleaseSmall => {},
+    }
+
+    libhello.pie = true;
+    libhello.linkLibC();
+
     b.installArtifact(libhello);
 }
