@@ -6,8 +6,5 @@ edition = "2021"
 [build]
 rustflags = ["-C", "relocation-model=pie"]
 
-[dependencies]
-zig = { path = ".." }
-
 [build-dependencies]
 zig = { path = ".." }
