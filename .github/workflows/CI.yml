@@ -25,6 +25,7 @@ jobs:
 
       - name: Install dependencies
         if: runner.os != 'Windows'
+        working-directory: ${{github.workspace}}/test-crate
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
