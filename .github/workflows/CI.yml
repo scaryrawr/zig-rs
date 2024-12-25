@@ -25,14 +25,10 @@ jobs:
 
       - name: Install dependencies
         if: runner.os != 'Windows'
-        working-directory: ${{github.workspace}}/test-crate
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
             rustup target install $(uname -m)-unknown-linux-musl
-            mkdir -p ./.cargo
-            echo '[build]' > ./.cargo/Cargo.toml
-            echo "target = \"$(uname -m)-unknown-linux-musl\"" >> ./.cargo/Cargo.toml
           fi
 
           brew install zig
@@ -48,8 +44,10 @@ jobs:
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            cargo build --target $(uname -m)-unknown-linux-musl
+          else
+            cargo build
           fi
-          cargo build
 
       - name: Run build release
         working-directory: ${{github.workspace}}/test-crate
@@ -57,8 +55,10 @@ jobs:
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            cargo build --target $(uname -m)-unknown-linux-musl --release
+          else
+            cargo build --release
           fi
-          cargo build --release
 
       - name: Run test crate debug
         working-directory: ${{github.workspace}}/test-crate
@@ -66,8 +66,10 @@ jobs:
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            cargo test --target $(uname -m)-unknown-linux-musl
+          else
+            cargo test
           fi
-          cargo test
 
       - name: Run test crate release
         working-directory: ${{github.workspace}}/test-crate
@@ -75,5 +77,7 @@ jobs:
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            cargo test --target $(uname -m)-unknown-linux-musl --release
+          else
+            cargo test --release
           fi
-          cargo test --release
