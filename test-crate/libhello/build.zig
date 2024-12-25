@@ -16,8 +16,5 @@ pub fn build(b: *std.Build) void {
         .ReleaseFast, .ReleaseSmall => {},
     }
 
-    libhello.pie = true;
-    libhello.linkLibC();
-
     b.installArtifact(libhello);
 }
