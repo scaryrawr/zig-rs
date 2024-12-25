@@ -62,6 +62,9 @@ impl Config {
         } else if target.contains("musl") {
             // Default to musl when using linux
             os += "-musl";
+        } else if target.contains("gnu") {
+            // Default to musl when using linux
+            os += "-gnu";
         }
 
         let optimize = match self.optimize {
