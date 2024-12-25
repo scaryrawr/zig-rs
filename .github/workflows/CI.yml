@@ -29,9 +29,9 @@ jobs:
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
             rustup target install $(uname -m)-unknown-linux-musl
-            mkdir -p ./.cargo
-            echo '[build]' > ./.cargo/Cargo.toml
-            echo "target = \"$(uname -m)-unknown-linux-musl\"" >> ./.cargo/Cargo.toml
+            # mkdir -p ./.cargo
+            # echo '[build]' > ./.cargo/Cargo.toml
+            # echo "target = \"$(uname -m)-unknown-linux-musl\"" >> ./.cargo/Cargo.toml
           fi
 
           brew install zig
