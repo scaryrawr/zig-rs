@@ -28,8 +28,6 @@ jobs:
         run: |
           if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-            echo '' >> ~/.bashrc
-            echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
           fi
 
           brew install zig
@@ -41,16 +39,36 @@ jobs:
 
       - name: Run build debug
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo build
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo build
 
       - name: Run build release
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo build --release
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo build --release
 
       - name: Run test crate debug
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo test
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo test
 
       - name: Run test crate release
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo test --release
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo test --release
