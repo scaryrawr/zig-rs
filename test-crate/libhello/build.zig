@@ -4,20 +4,20 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const libhello = if (b.graph.host.result.os.tag == .linux)
-        b.addSharedLibrary(.{
-            .name = "hello",
-            .root_source_file = b.path("hello.zig"),
-            .target = target,
-            .optimize = optimize,
-        })
-    else
-        b.addStaticLibrary(.{
-            .name = "hello",
-            .root_source_file = b.path("hello.zig"),
-            .target = target,
-            .optimize = optimize,
-        });
+    const libhello = b.addStaticLibrary(.{
+        .name = "hello",
+        .root_source_file = b.path("hello.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    switch (optimize) {
+        .Debug, .ReleaseSafe => libhello.bundle_compiler_rt = true,
+        .ReleaseFast, .ReleaseSmall => {},
+    }
+
+    libhello.pie = true;
+    libhello.linkLibC();
 
     b.installArtifact(libhello);
 }
