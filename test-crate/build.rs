@@ -5,9 +5,5 @@ fn main() {
     let dst = zig::build("libhello");
 
     println!("cargo:rustc-link-search=native={}", dst.display());
-    if cfg!(target_os = "linux") {
-        println!("cargo:rustc-link-lib=dylib=hello");
-    } else {
-        println!("cargo:rustc-link-lib=static=hello");
-    }
+    println!("cargo:rustc-link-lib=static=hello");
 }
