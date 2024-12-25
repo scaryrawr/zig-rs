@@ -17,15 +17,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install zig
+      - name: Install dependencies
         if: runner.os != 'Windows'
         run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+
           brew install zig
 
       - name: Install zig
@@ -33,10 +37,38 @@ jobs:
         run: |
           choco install zig -y
 
+      - name: Run build debug
+        working-directory: ${{github.workspace}}/test-crate
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo build
+
+      - name: Run build release
+        working-directory: ${{github.workspace}}/test-crate
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo build --release
+
       - name: Run test crate debug
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo test
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo test
 
       - name: Run test crate release
         working-directory: ${{github.workspace}}/test-crate
-        run: cargo test --release
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo test --release

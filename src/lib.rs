@@ -59,6 +59,9 @@ impl Config {
         let target = env::var("TARGET").unwrap();
         if target.contains("msvc") {
             os += "-msvc";
+        } else if target.contains("musl") {
+            // Default to musl when using linux
+            os += "-musl";
         }
 
         let optimize = match self.optimize {
