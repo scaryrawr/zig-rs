@@ -91,7 +91,10 @@ impl Config {
 
         let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
         let dst = out_path.join("lib");
+        let cache = out_path.join("cache");
         let mut cmd = Command::new("zig");
+        cmd.env("ZIG_GLOBAL_CACHE_DIR", cache.to_str().unwrap());
+        cmd.env("ZIG_LOCAL_CACHE_DIR", cache.to_str().unwrap());
         cmd.current_dir(self.path.clone());
         cmd.arg("build");
         cmd.arg("--prefix");
