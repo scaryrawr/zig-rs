@@ -76,8 +76,8 @@ impl Config {
                 };
 
                 let opt_level = match std::env::var("OPT_LEVEL").unwrap().as_str() {
-                    "0" => "Safe",
-                    "1" | "2" | "3" => "Fast",
+                    "0" | "1" => "Safe",
+                    "2" | "3" => "Fast",
                     "s" | "z" => "Small",
                     _ => "Safe",
                 };
