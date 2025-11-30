@@ -50,22 +50,31 @@ pub fn build<P: AsRef<Path>>(path: P) -> PathBuf {
 
 impl Config {
     pub fn build(&mut self) -> PathBuf {
-        let mut os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+        let os = env::var("CARGO_CFG_TARGET_OS").unwrap();
         let arch = match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
-            "i686" => "i386".to_string(),
+            "x86" | "i686" | "i586" | "i386" => "x86".to_string(),
             s => s.to_string(),
         };
 
         let target = env::var("TARGET").unwrap();
-        if target.contains("msvc") {
-            os += "-msvc";
+        let abi = if target.contains("msvc") {
+            Some("msvc")
+        } else if target.contains("musleabihf") {
+            Some("musleabihf")
+        } else if target.contains("musleabi") {
+            Some("musleabi")
         } else if target.contains("musl") {
-            // Default to musl when using linux
-            os += "-musl";
+            Some("musl")
+        } else if target.contains("gnueabihf") {
+            Some("gnueabihf")
+        } else if target.contains("gnueabi") {
+            Some("gnueabi")
         } else if target.contains("gnu") {
-            // Default to musl when using linux
-            os += "-gnu";
-        }
+            Some("gnu")
+        } else {
+            // macOS, iOS, FreeBSD, etc. don't need an explicit ABI
+            None
+        };
 
         let optimize = match self.optimize {
             Some(ref s) => s.clone(),
@@ -99,7 +108,11 @@ impl Config {
         cmd.arg("build");
         cmd.arg("--prefix");
         cmd.arg(out_path.display().to_string());
-        cmd.arg(format!("-Dtarget={}-{}", arch, os));
+        let zig_target = match abi {
+            Some(abi) => format!("{}-{}-{}", arch, os, abi),
+            None => format!("{}-{}", arch, os),
+        };
+        cmd.arg(format!("-Dtarget={}", zig_target));
         cmd.arg(format!("-Doptimize={}", optimize));
         self.defines.iter().for_each(|(k, v)| {
             cmd.arg(format!("-D{}={}", k, v));
