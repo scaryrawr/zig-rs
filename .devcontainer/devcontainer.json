@@ -1,20 +1,21 @@
 {
-    "name": "Ubuntu",
-    "image": "mcr.microsoft.com/devcontainers/base:noble",
-    "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {},
-        "ghcr.io/devcontainers/features/rust:1": {},
-        "ghcr.io/devcontainers-extra/features/zig:1": {}
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "github.vscode-github-actions",
-                "rust-lang.rust-analyzer",
-                "fill-labs.dependi",
-                "vadimcn.vscode-lldb",
-                "ziglang.vscode-zig"
-            ]
-        }
+  "name": "Ubuntu",
+  "image": "mcr.microsoft.com/devcontainers/base:noble",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/scaryrawr/dev-feats/zig:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "github.vscode-github-actions",
+        "rust-lang.rust-analyzer",
+        "fill-labs.dependi",
+        "vadimcn.vscode-lldb",
+        "ziglang.vscode-zig"
+      ]
     }
+  }
 }
