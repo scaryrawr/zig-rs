@@ -50,9 +50,15 @@ pub fn build<P: AsRef<Path>>(path: P) -> PathBuf {
 
 impl Config {
     pub fn build(&mut self) -> PathBuf {
-        let os = env::var("CARGO_CFG_TARGET_OS").unwrap();
         let arch = match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
             "x86" | "i686" | "i586" | "i386" => "x86".to_string(),
+            s => s.to_string(),
+        };
+
+        // Map Rust OS to Zig OS, handling special cases like wasm
+        let os = match env::var("CARGO_CFG_TARGET_OS").unwrap().as_str() {
+            // wasm32-unknown-unknown has OS "unknown", which should map to zig's "freestanding"
+            "unknown" => "freestanding".to_string(),
             s => s.to_string(),
         };
 
