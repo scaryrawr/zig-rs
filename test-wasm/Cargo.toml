@@ -1,0 +1,17 @@
+[package]
+name = "test-wasm"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[build-dependencies]
+zig = { path = ".." }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
