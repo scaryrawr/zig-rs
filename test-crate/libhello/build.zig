@@ -17,7 +17,11 @@ pub fn build(b: *std.Build) void {
     }
 
     libhello.pie = true;
-    libhello.linkLibC();
+    if (@hasField(@TypeOf(hello_module.*), "link_libc")) {
+        hello_module.link_libc = true;
+    } else {
+        libhello.linkLibC();
+    }
 
     b.installArtifact(libhello);
 }

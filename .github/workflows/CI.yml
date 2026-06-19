@@ -38,6 +38,14 @@ jobs:
         run: |
           choco install zig -y
 
+      - name: Run root tests
+        shell: bash
+        run: |
+          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          cargo test
+
       - name: Run build debug
         working-directory: ${{github.workspace}}/test-crate
         shell: bash
@@ -112,3 +120,63 @@ jobs:
       - name: Cross-compile test-crate (release)
         working-directory: ${{github.workspace}}/test-crate
         run: cargo zigbuild --target ${{ matrix.target }} --release
+
+  target-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - aarch64-apple-darwin
+          - aarch64-apple-ios-sim
+          - aarch64-linux-android
+          - x86_64-pc-windows-msvc
+          - wasm32-unknown-unknown
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+
+      - name: Install Rust target
+        run: |
+          rustup update
+          rustup target add ${{ matrix.target }}
+
+      - name: Check target smoke package
+        run: cargo check --manifest-path test-targets/Cargo.toml --target ${{ matrix.target }}
+
+  wasm-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Rust wasm target
+        run: |
+          rustup update
+          rustup target add wasm32-unknown-unknown
+
+      - name: Build wasm integration crate
+        working-directory: ${{github.workspace}}/test-wasm
+        run: cargo build --target wasm32-unknown-unknown
+
+      - name: Run wasm integration crate
+        working-directory: ${{github.workspace}}/test-wasm
+        run: node run.js
