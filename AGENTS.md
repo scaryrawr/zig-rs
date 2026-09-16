@@ -32,7 +32,7 @@ cd test-wasm && cargo build --target wasm32-unknown-unknown && node run.js
 cargo zigbuild --target aarch64-unknown-linux-gnu
 ```
 
-CI installs zig via `brew` (macOS/Linux) or `choco` (Windows), or `setup-zig@v2` for cross-compilation jobs.
+CI installs Zig 0.16.0 with `setup-zig@v2` on every platform and integration job.
 
 ## Coding Style
 
