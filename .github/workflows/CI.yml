@@ -23,64 +23,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        if: runner.os != 'Windows'
-        run: |
-          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          fi
-
-          brew install zig
-          rustup update
-
       - name: Install zig
-        if: runner.os == 'Windows'
-        run: |
-          choco install zig -y
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+
+      - name: Update Rust
+        run: rustup update
 
       - name: Run root tests
-        shell: bash
-        run: |
-          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          fi
-          cargo test
+        run: cargo test
 
       - name: Run build debug
         working-directory: ${{github.workspace}}/test-crate
-        shell: bash
-        run: |
-          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          fi
-          cargo build
+        run: cargo build
 
       - name: Run build release
         working-directory: ${{github.workspace}}/test-crate
-        shell: bash
-        run: |
-          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          fi
-          cargo build --release
+        run: cargo build --release
 
       - name: Run test crate debug
         working-directory: ${{github.workspace}}/test-crate
-        shell: bash
-        run: |
-          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          fi
-          cargo test
+        run: cargo test
 
       - name: Run test crate release
         working-directory: ${{github.workspace}}/test-crate
-        shell: bash
-        run: |
-          if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          fi
-          cargo test --release
+        run: cargo test --release
 
   cross-compile:
     runs-on: ubuntu-latest
@@ -103,7 +71,7 @@ jobs:
       - name: Install zig
         uses: mlugg/setup-zig@v2
         with:
-          version: 0.15.2
+          version: 0.16.0
 
       - name: Install cargo-zigbuild
         run: cargo install cargo-zigbuild
@@ -141,7 +109,7 @@ jobs:
       - name: Install zig
         uses: mlugg/setup-zig@v2
         with:
-          version: 0.15.2
+          version: 0.16.0
 
       - name: Install Rust target
         run: |
@@ -161,7 +129,7 @@ jobs:
       - name: Install zig
         uses: mlugg/setup-zig@v2
         with:
-          version: 0.15.2
+          version: 0.16.0
 
       - name: Install node
         uses: actions/setup-node@v4
